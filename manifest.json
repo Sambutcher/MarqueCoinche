@@ -2,7 +2,7 @@
 	"name": "Marque de Coinche de Gros",
 	"short_name": "Marque Coinche",
 	"display": "standalone",
-	"start_url": "./?utm_source=pwa_install",
+	"start_url": "./?standalone=true",
 	"scope": ".",
 	"theme_color": "#000",
 	"background_color": "#000",
