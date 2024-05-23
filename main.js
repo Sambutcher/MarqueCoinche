@@ -6,7 +6,7 @@ const buttonValidNous = document.getElementById("validNous");
 const buttonValidEux = document.getElementById("validEux");
 const buttonFaite = document.getElementById("faite");
 const buttonChutee = document.getElementById("chutee");
-const etoile = document.getElementById("etoile");
+const boxEtoile = document.getElementById("etoile");
 const textScoreNous = document.getElementById("scoreNous");
 const textScoreEux = document.getElementById("scoreEux");
 
@@ -16,7 +16,8 @@ let contrat;
 let coinche;
 let scoreNous=0;
 let scoreEux=0;
-
+let etoilesNous=0;
+let etoilesEux=0;
 
 function nextStatus(){
 	if (status==0){
@@ -28,7 +29,7 @@ function nextStatus(){
 		buttonValidEux.disabled=true;
 		buttonFaite.disabled=false;
 		buttonChutee.disabled=false;
-		etoile.disabled=false;
+		boxEtoile.disabled=false;
 
 		status=1;
 	} else {
@@ -44,8 +45,8 @@ function nextStatus(){
 		buttonValidEux.hidden=false;
 		buttonFaite.disabled=true;
 		buttonChutee.disabled=true;
-		etoile.disabled=true;
-		etoile.checked=false;
+		boxEtoile.disabled=true;
+		boxEtoile.checked=false;
 
 		status=0;
 }}
@@ -83,24 +84,28 @@ buttonValidEux.onclick = () => {
 }
 
 buttonFaite.onclick = () => {
-	nextStatus();
 	if (preneur=="Nous"){
 		scoreNous+=contrat*coinche;
+		boxEtoile.checked ? etoilesNous++ : null;
 	} else {
 		scoreEux+=contrat*coinche;
+		boxEtoile.checked ? etoilesEux++ : null;
 	}
-	textScoreNous.innerHTML=scoreNous;
-	textScoreEux.innerHTML=scoreEux;
+	textScoreNous.innerHTML=scoreNous+"*".repeat(etoilesNous);
+	textScoreEux.innerHTML=scoreEux+"*".repeat(etoilesEux);
+	nextStatus();
 }
 
 buttonChutee.onclick = () => {
-	nextStatus();
 	if (preneur=="Nous"){
 		scoreEux+=160*coinche;
+		boxEtoile.checked ? etoilesEux++ : null;
 	} else {
 		scoreNous+=160*coinche;
+		boxEtoile.checked ? etoilesNous++ : null;
 	}
-	textScoreNous.innerHTML=scoreNous;
-	textScoreEux.innerHTML=scoreEux;
+	textScoreNous.innerHTML=scoreNous+"*".repeat(etoilesNous);
+	textScoreEux.innerHTML=scoreEux+"*".repeat(etoilesEux);
+	nextStatus();
 
 }
