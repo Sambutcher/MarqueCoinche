@@ -36,30 +36,66 @@
 
  <body>
 
-	<header>
-		<div class="container">
-			<h1></h1>
-		</div>
-	</header>
-
 	<section>
 		<div class="container">
-			<h2 id="what">Annonce</h2>
-			<select name="annonce" id="annonce-select">
+			<select id="annonce">
   			<option value="">Contrat</option>
-  			<option value="80">80</option>
- 			<option value="90">90</option>
-  			<option value="100">100</option>
-  			<option value="110">110</option>
-  			<option value="120">120</option>
-  			
-</select>
+  			<option value=80>80</option>
+ 			<option value=90>90</option>
+  			<option value=100>100</option>
+  			<option value=110>110</option>
+  			<option value=120>120</option>
+			<option value=130>130</option>
+ 			<option value=140>140</option>
+  			<option value=150>150</option>
+  			<option value=160>160</option>
+  			<option value=170>170</option>
+			<option value=180>180</option>
+ 			<option value="Capot">Capot</option>
+  			<option value="Générale">Générale</option>
+			</select>
 		</div>
+		<div class="container">
+			<input type="radio" id="noncoinche" name="isCoinche" checked />
+    			<label>Non coinché</label>
+			<input type="radio" id="coinche" name="isCoinche" />
+    			<label>Coinché</label>
+			<input type="radio" id="surcoinche" name="isCoinche" />
+    			<label>Surcoinché</label>
+		</div>
+		<div class="container">
+			<button id="validNous">Nous</button>
+			<button id="validEux">Eux</button>
+		</div>
+
+		<div class="container">
+			<button id="faite" disabled>Faite</button>
+			<button id="chutee" disabled>Chutée</button>
+			<input type="checkbox" id="etoile" disabled/>
+    			<label>Etoile</label>
+		</div>
+	
 	</section>
 
 	<footer>
 		<div class="container">
-			<p>blabla</p>
+			<table>
+				<thead>
+					<tr>
+						<th>Nous</th>
+						<th>Eux</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th id="scoreNous">0</th>
+						<th id="scoreEux">0</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<div class="container">
+			<button id="reset" onclick="location.reload();">Reset</button>
 		</div>
 	</footer>
 
