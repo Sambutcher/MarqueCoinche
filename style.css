@@ -1,6 +1,5 @@
 datalist {
-  display: flex;
-  display: -webkit-flex;
+  display: flex !important;
   justify-content: space-between;
   width: 100%;
 }
