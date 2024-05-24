@@ -1,3 +1,4 @@
+const selectDonneur=document.getElementById("donneur");
 const selectAnnonce = document.getElementById("annonce");
 const radioNoncoinche = document.getElementById("noncoinche");
 const radioCoinche = document.getElementById("coinche");
@@ -21,6 +22,7 @@ let etoilesEux=0;
 
 function nextStatus(){
 	if (status==0){
+		selectDonneur.disabled=true;
 		selectAnnonce.disabled=true;
 		radioNoncoinche.disabled=true;
 		radioCoinche.disabled=true;
@@ -33,6 +35,9 @@ function nextStatus(){
 
 		status=1;
 	} else {
+		selectDonneur.disabled=false;
+		selectDonneur.valueAsNumber=(selectDonneur.valueAsNumber+1)%4; 
+		console.log(selectDonneur.value);
 		selectAnnonce.disabled=false;
 		selectAnnonce.value="";
 		radioNoncoinche.disabled=false;
