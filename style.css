@@ -1,7 +1,9 @@
 datalist {
   display: flex;
+  display: -webkit-flex;
   justify-content: space-between;
   width: 100%;
+  align-items: flex-start;
 }
 
 input[type="range"] {
