@@ -3,10 +3,10 @@ datalist {
   display: -webkit-flex;
   justify-content: space-between;
   width: 100%;
-  align-items: flex-start;
 }
 
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none; 
+option {
+    display: flex;
+    justify-content: center;
+    z-index: -1;
 }
