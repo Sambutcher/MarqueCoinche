@@ -1,4 +1,4 @@
-datalist {
+/* datalist {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -8,4 +8,4 @@ option {
     display: flex;
     justify-content: center;
     z-index: -1;
-}
+} */
