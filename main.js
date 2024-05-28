@@ -19,6 +19,8 @@ let scoreNous=0;
 let scoreEux=0;
 let etoilesNous=0;
 let etoilesEux=0;
+let manchesNous=[];
+let manchesEux=[];
 
 function nextStatus(){
 	if (status==0){
@@ -37,7 +39,6 @@ function nextStatus(){
 	} else {
 		selectDonneur.disabled=false;
 		selectDonneur.valueAsNumber=(selectDonneur.valueAsNumber+1)%4; 
-		console.log(selectDonneur.value);
 		selectAnnonce.disabled=false;
 		selectAnnonce.value="";
 		radioNoncoinche.disabled=false;
@@ -55,6 +56,10 @@ function nextStatus(){
 
 		status=0;
 }}
+
+texteManche=(tot,item)=>{
+	return tot+item+"<br>";
+	}
 
 buttonValidNous.onclick = () => {
 	if (selectAnnonce.value!=""){
@@ -96,8 +101,16 @@ buttonFaite.onclick = () => {
 		scoreEux+=contrat*coinche;
 		boxEtoile.checked ? etoilesEux++ : null;
 	}
-	textScoreNous.innerHTML=scoreNous+"*".repeat(etoilesNous);
-	textScoreEux.innerHTML=scoreEux+"*".repeat(etoilesEux);
+
+	if (scoreNous>=1000 || scoreEux >=1000) {
+		manchesNous.push(scoreNous);
+		manchesEux.push(scoreEux);
+		scoreNous=0;
+		scoreEux=0;
+	}
+console.log(manchesNous,manchesEux);
+	textScoreNous.innerHTML=manchesNous.reduce(texteManche,"") + scoreNous+"*".repeat(etoilesNous);
+	textScoreEux.innerHTML=manchesEux.reduce(texteManche,"") + scoreEux+"*".repeat(etoilesEux);
 	nextStatus();
 }
 
@@ -109,8 +122,15 @@ buttonChutee.onclick = () => {
 		scoreNous+=160*coinche;
 		boxEtoile.checked ? etoilesNous++ : null;
 	}
-	textScoreNous.innerHTML=scoreNous+"*".repeat(etoilesNous);
-	textScoreEux.innerHTML=scoreEux+"*".repeat(etoilesEux);
+if (scoreNous>=1000 || scoreEux >=1000) {
+		manchesNous.push(scoreNous);
+		manchesEux.push(scoreEux);
+		scoreNous=0;
+		scoreEux=0;
+	}
+console.log(manchesNous,manchesEux);
+	textScoreNous.innerHTML=manchesNous.reduce(texteManche,"") + scoreNous+"*".repeat(etoilesNous);
+	textScoreEux.innerHTML=manchesEux.reduce(texteManche,"") + scoreEux+"*".repeat(etoilesEux);
 	nextStatus();
 
 }

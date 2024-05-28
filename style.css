@@ -1,11 +1,5 @@
-/* datalist {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+body {
+   -webkit-user-select: none;
+   touch-action:none;
+   overflow: hidden;
 }
-
-option {
-    display: flex;
-    justify-content: center;
-    z-index: -1;
-} */
