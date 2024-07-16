@@ -7,6 +7,7 @@ const buttonValidNous = document.getElementById("validNous");
 const buttonValidEux = document.getElementById("validEux");
 const buttonFaite = document.getElementById("faite");
 const buttonChutee = document.getElementById("chutee");
+const buttonAnnulee = document.getElementById("annulee");
 const boxEtoile = document.getElementById("etoile");
 const textScoreNous = document.getElementById("scoreNous");
 const textScoreEux = document.getElementById("scoreEux");
@@ -33,6 +34,7 @@ function nextStatus(){
 		buttonValidEux.disabled=true;
 		buttonFaite.disabled=false;
 		buttonChutee.disabled=false;
+		buttonAnnulee.disabled=false;
 		boxEtoile.disabled=false;
 
 		status=1;
@@ -51,6 +53,7 @@ function nextStatus(){
 		buttonValidEux.hidden=false;
 		buttonFaite.disabled=true;
 		buttonChutee.disabled=true;
+		buttonAnnulee.disabled=true;
 		boxEtoile.disabled=true;
 		boxEtoile.checked=false;
 
@@ -108,7 +111,7 @@ buttonFaite.onclick = () => {
 		scoreNous=0;
 		scoreEux=0;
 	}
-console.log(manchesNous,manchesEux);
+
 	textScoreNous.innerHTML=manchesNous.reduce(texteManche,"") + scoreNous+"*".repeat(etoilesNous);
 	textScoreEux.innerHTML=manchesEux.reduce(texteManche,"") + scoreEux+"*".repeat(etoilesEux);
 	nextStatus();
@@ -128,9 +131,13 @@ if (scoreNous>=1000 || scoreEux >=1000) {
 		scoreNous=0;
 		scoreEux=0;
 	}
-console.log(manchesNous,manchesEux);
+
 	textScoreNous.innerHTML=manchesNous.reduce(texteManche,"") + scoreNous+"*".repeat(etoilesNous);
 	textScoreEux.innerHTML=manchesEux.reduce(texteManche,"") + scoreEux+"*".repeat(etoilesEux);
 	nextStatus();
 
+}
+
+buttonAnnulee.onclick = () => {
+	nextStatus();
 }
