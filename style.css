@@ -100,6 +100,12 @@ h3 {
 	display: none !important;
 }
 
+.phase {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
 .carte {
 	display: flex;
 	flex-direction: column;
@@ -236,10 +242,11 @@ h3 {
 
 /* --- Donneur : une ligne, les quatre places côte à côte --- */
 
-.donneur {
-	display: flex;
+.carte-donneur {
+	flex-direction: row;
 	align-items: center;
 	gap: 6px;
+	padding-block: 10px;
 }
 
 .donneur h3 {

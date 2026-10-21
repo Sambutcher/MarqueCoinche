@@ -48,24 +48,26 @@
 		</section>
 
 		<!-- Phase 1 : annonce -->
-		<section class="carte" id="phase-annonce" aria-label="Annonce">
-			<div class="donneur" role="radiogroup" aria-labelledby="titre-donneur" id="donneurs">
+		<div class="phase" id="phase-annonce">
+			<section class="carte carte-donneur donneur" role="radiogroup" aria-labelledby="titre-donneur" id="donneurs">
 				<h3 id="titre-donneur">Donneur</h3>
 				<button type="button" class="place" data-donneur="0" role="radio" aria-label="Donneur à gauche">←</button>
 				<button type="button" class="place" data-donneur="1" role="radio" aria-label="Donneur en face">↑</button>
 				<button type="button" class="place" data-donneur="2" role="radio" aria-label="Donneur à droite">→</button>
 				<button type="button" class="place" data-donneur="3" role="radio" aria-label="Donneur en bas">↓</button>
-			</div>
+			</section>
 
-			<div class="grille-contrats" role="radiogroup" aria-label="Contrat" id="contrats"></div>
+			<section class="carte" aria-label="Contrat">
+				<div class="grille-contrats" role="radiogroup" aria-label="Contrat" id="contrats"></div>
 
-			<div class="segmente" role="radiogroup" aria-label="Coinche" id="coinches"></div>
+				<div class="segmente" role="radiogroup" aria-label="Coinche" id="coinches"></div>
 
-			<div class="paire">
-				<button type="button" class="bouton bouton-principal" data-preneur="nous" disabled>Nous prenons</button>
-				<button type="button" class="bouton bouton-principal" data-preneur="eux" disabled>Eux prennent</button>
-			</div>
-		</section>
+				<div class="paire">
+					<button type="button" class="bouton bouton-principal" data-preneur="nous" disabled>Nous prenons</button>
+					<button type="button" class="bouton bouton-principal" data-preneur="eux" disabled>Eux prennent</button>
+				</div>
+			</section>
+		</div>
 
 		<!-- Phase 2 : résultat -->
 		<section class="carte" id="phase-resultat" aria-label="Résultat" hidden>
