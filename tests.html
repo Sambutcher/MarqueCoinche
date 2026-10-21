@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Tests — Marque de Coinche</title>
+	<style>
+		body { font: 15px/1.5 system-ui, sans-serif; margin: 16px; }
+		.ok { color: #17803d; }
+		.ko { color: #c62828; font-weight: 600; }
+		ul { padding-left: 1.2em; }
+	</style>
+</head>
+<body>
+	<h1>Tests des règles</h1>
+	<p id="bilan">Exécution…</p>
+	<ul id="liste"></ul>
+	<script type="module">
+		import { lancerTests } from "./tests/regles.test.js";
+
+		const resultats = lancerTests();
+		const echecs = resultats.filter(r => !r.ok);
+		const liste = document.getElementById("liste");
+		for (const r of resultats) {
+			const li = document.createElement("li");
+			li.className = r.ok ? "ok" : "ko";
+			li.textContent = r.ok ? `✓ ${r.nom}` : `✗ ${r.nom} — ${r.erreur}`;
+			liste.append(li);
+		}
+		const bilan = document.getElementById("bilan");
+		bilan.textContent = `${resultats.length - echecs.length}/${resultats.length} tests réussis`;
+		bilan.className = echecs.length ? "ko" : "ok";
+		document.body.dataset.bilan = echecs.length ? "echec" : "succes";
+	</script>
+</body>
+</html>
