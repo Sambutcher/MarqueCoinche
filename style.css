@@ -14,7 +14,6 @@
 	--faite: #1f9d55;
 	--chutee: #d93025;
 	--etoile: #f5a623;
-	--tapis: #1e6b45;
 
 	--rayon: 12px;
 	--marge: 16px;
@@ -33,7 +32,6 @@
 		--faite: #30b46c;
 		--chutee: #ff453a;
 		--etoile: #ffc94a;
-		--tapis: #1b5e3d;
 	}
 }
 
@@ -150,16 +148,19 @@ h3 {
 }
 
 .score {
-	font-size: 44px;
+	font-size: 40px;
 	font-weight: 700;
 	line-height: 1.1;
 	font-variant-numeric: tabular-nums;
 }
 
 .etoiles {
-	min-height: 1.35em;
 	color: var(--etoile);
 	letter-spacing: 0.1em;
+}
+
+.etoiles:empty {
+	display: none;
 }
 
 /* --- Boutons --- */
@@ -233,38 +234,26 @@ h3 {
 	gap: 10px;
 }
 
-/* --- Donneur : quatre places autour du tapis --- */
+/* --- Donneur : une ligne, les quatre places côte à côte --- */
 
-.tapis {
-	display: grid;
-	grid-template-columns: var(--tactile) 1fr var(--tactile);
-	grid-template-rows: var(--tactile) 44px var(--tactile);
+.donneur {
+	display: flex;
+	align-items: center;
 	gap: 6px;
-	width: min(100%, 260px);
-	margin: 0 auto;
 }
 
-.tapis-centre {
-	grid-area: 2 / 2;
-	background: var(--tapis);
-	border-radius: 8px;
+.donneur h3 {
+	margin-right: 6px;
 }
 
 .place {
+	flex: 1;
+	min-height: 44px;
 	border: 0;
-	border-radius: 50%;
+	border-radius: 10px;
 	background: var(--choix);
 	font-size: 20px;
-	width: var(--tactile);
-	height: var(--tactile);
-	justify-self: center;
-	align-self: center;
 }
-
-.place-0 { grid-area: 2 / 1; }
-.place-1 { grid-area: 1 / 2; }
-.place-2 { grid-area: 2 / 3; }
-.place-3 { grid-area: 3 / 2; }
 
 .place[aria-checked="true"] {
 	background: var(--accent);

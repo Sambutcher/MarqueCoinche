@@ -49,16 +49,14 @@
 
 		<!-- Phase 1 : annonce -->
 		<section class="carte" id="phase-annonce" aria-label="Annonce">
-			<h3>Donneur</h3>
-			<div class="tapis" role="radiogroup" aria-label="Donneur" id="donneurs">
-				<button type="button" class="place place-0" data-donneur="0" aria-label="Donneur à gauche">←</button>
-				<button type="button" class="place place-1" data-donneur="1" aria-label="Donneur en face">↑</button>
-				<button type="button" class="place place-2" data-donneur="2" aria-label="Donneur à droite">→</button>
-				<button type="button" class="place place-3" data-donneur="3" aria-label="Donneur en bas">↓</button>
-				<div class="tapis-centre" aria-hidden="true"></div>
+			<div class="donneur" role="radiogroup" aria-labelledby="titre-donneur" id="donneurs">
+				<h3 id="titre-donneur">Donneur</h3>
+				<button type="button" class="place" data-donneur="0" role="radio" aria-label="Donneur à gauche">←</button>
+				<button type="button" class="place" data-donneur="1" role="radio" aria-label="Donneur en face">↑</button>
+				<button type="button" class="place" data-donneur="2" role="radio" aria-label="Donneur à droite">→</button>
+				<button type="button" class="place" data-donneur="3" role="radio" aria-label="Donneur en bas">↓</button>
 			</div>
 
-			<h3>Contrat</h3>
 			<div class="grille-contrats" role="radiogroup" aria-label="Contrat" id="contrats"></div>
 
 			<div class="segmente" role="radiogroup" aria-label="Coinche" id="coinches"></div>
