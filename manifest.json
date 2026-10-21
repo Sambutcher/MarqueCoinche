@@ -1,16 +1,18 @@
 {
-	"name": "Marque de Coinche de Gros",
+	"name": "Marque de Coinche",
 	"short_name": "Marque Coinche",
+	"description": "Marque des points à la coinche, utilisable hors connexion.",
+	"lang": "fr",
+	"id": "./",
+	"start_url": "./",
+	"scope": "./",
 	"display": "standalone",
-	"start_url": "./?standalone=true",
-	"scope": ".",
-	"theme_color": "#000",
-	"background_color": "#000",
-	"icons": [{
-      		"src": "favicon-16x16.png",
-      		"sizes": "16x16"},
-   		{
-      		"src": "favicon-32x32.png",
-      		"sizes": "32x32"}
-   	]
-	}
+	"orientation": "portrait",
+	"theme_color": "#f2f2f7",
+	"background_color": "#f2f2f7",
+	"icons": [
+		{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+		{ "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+		{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+	]
+}

@@ -1,5 +1,426 @@
+/* Marque de Coinche — pensé pour le téléphone, en priorité l'iPhone installé en plein écran. */
+
+:root {
+	color-scheme: light dark;
+
+	--fond: #f2f2f7;
+	--carte: #ffffff;
+	--texte: #1c1c1e;
+	--texte-doux: #6c6c70;
+	--bordure: #d1d1d6;
+	--choix: #e5e5ea;
+	--accent: #007aff;
+	--sur-accent: #ffffff;
+	--faite: #1f9d55;
+	--chutee: #d93025;
+	--etoile: #f5a623;
+	--tapis: #1e6b45;
+
+	--rayon: 12px;
+	--marge: 16px;
+	--tactile: 48px;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--fond: #000000;
+		--carte: #1c1c1e;
+		--texte: #f2f2f7;
+		--texte-doux: #a1a1a6;
+		--bordure: #38383a;
+		--choix: #2c2c2e;
+		--accent: #0a84ff;
+		--faite: #30b46c;
+		--chutee: #ff453a;
+		--etoile: #ffc94a;
+		--tapis: #1b5e3d;
+	}
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	text-size-adjust: 100%;
+}
+
 body {
-   -webkit-user-select: none;
-   touch-action:none;
-   overflow: hidden;
+	margin: 0;
+	min-height: 100dvh;
+	background: var(--fond);
+	color: var(--texte);
+	font: 17px/1.35 -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
+	-webkit-tap-highlight-color: transparent;
+	overscroll-behavior: none;
+}
+
+.app {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	max-width: 480px;
+	margin: 0 auto;
+	/* Encoche, Dynamic Island et barre d'accueil */
+	padding:
+		calc(env(safe-area-inset-top) + 12px)
+		calc(env(safe-area-inset-right) + var(--marge))
+		calc(env(safe-area-inset-bottom) + var(--marge))
+		calc(env(safe-area-inset-left) + var(--marge));
+}
+
+button,
+summary,
+label {
+	-webkit-user-select: none;
+	user-select: none;
+	touch-action: manipulation;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+	cursor: pointer;
+}
+
+h2,
+h3,
+p {
+	margin: 0;
+}
+
+h3 {
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--texte-doux);
+}
+
+[hidden] {
+	display: none !important;
+}
+
+.carte {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	padding: var(--marge);
+	background: var(--carte);
+	border-radius: var(--rayon);
+}
+
+/* --- Marque --- */
+
+.marque {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	background: var(--carte);
+	border-radius: var(--rayon);
+	text-align: center;
+}
+
+.marque-equipe {
+	padding: 10px 8px 12px;
+}
+
+.marque-equipe + .marque-equipe {
+	border-left: 1px solid var(--bordure);
+}
+
+.marque h2 {
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--texte-doux);
+}
+
+.manches {
+	margin: 4px 0 0;
+	padding: 0;
+	list-style: none;
+	font-size: 15px;
+	color: var(--texte-doux);
+	font-variant-numeric: tabular-nums;
+}
+
+.manches .gagnee {
+	color: var(--texte);
+	font-weight: 600;
+}
+
+.score {
+	font-size: 44px;
+	font-weight: 700;
+	line-height: 1.1;
+	font-variant-numeric: tabular-nums;
+}
+
+.etoiles {
+	min-height: 1.35em;
+	color: var(--etoile);
+	letter-spacing: 0.1em;
+}
+
+/* --- Boutons --- */
+
+.bouton {
+	min-height: var(--tactile);
+	padding: 0 14px;
+	border: 0;
+	border-radius: var(--rayon);
+	font-weight: 600;
+}
+
+.bouton:disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+.bouton:not(:disabled):active {
+	filter: brightness(0.88);
+}
+
+.bouton-principal {
+	background: var(--accent);
+	color: var(--sur-accent);
+}
+
+.bouton-faite {
+	background: var(--faite);
+	color: #fff;
+	min-height: 64px;
+	font-size: 20px;
+}
+
+.bouton-chutee {
+	background: var(--chutee);
+	color: #fff;
+	min-height: 64px;
+	font-size: 20px;
+}
+
+.bouton-contour {
+	background: transparent;
+	border: 1.5px solid var(--bordure);
+	font-weight: 500;
+	font-size: 15px;
+}
+
+.bouton-danger {
+	color: var(--chutee);
+}
+
+.bouton-lien {
+	background: transparent;
+	color: var(--accent);
+	font-weight: 500;
+}
+
+.bouton-etoile {
+	background: var(--choix);
+	color: var(--texte-doux);
+}
+
+.bouton-etoile[aria-pressed="true"] {
+	background: var(--etoile);
+	color: #1c1c1e;
+}
+
+.paire {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+}
+
+/* --- Donneur : quatre places autour du tapis --- */
+
+.tapis {
+	display: grid;
+	grid-template-columns: var(--tactile) 1fr var(--tactile);
+	grid-template-rows: var(--tactile) 44px var(--tactile);
+	gap: 6px;
+	width: min(100%, 260px);
+	margin: 0 auto;
+}
+
+.tapis-centre {
+	grid-area: 2 / 2;
+	background: var(--tapis);
+	border-radius: 8px;
+}
+
+.place {
+	border: 0;
+	border-radius: 50%;
+	background: var(--choix);
+	font-size: 20px;
+	width: var(--tactile);
+	height: var(--tactile);
+	justify-self: center;
+	align-self: center;
+}
+
+.place-0 { grid-area: 2 / 1; }
+.place-1 { grid-area: 1 / 2; }
+.place-2 { grid-area: 2 / 3; }
+.place-3 { grid-area: 3 / 2; }
+
+.place[aria-checked="true"] {
+	background: var(--accent);
+	color: var(--sur-accent);
+}
+
+/* --- Contrat et coinche --- */
+
+.grille-contrats {
+	display: grid;
+	grid-template-columns: repeat(5, 1fr);
+	gap: 6px;
+}
+
+.choix {
+	min-height: 44px;
+	padding: 0 2px;
+	border: 0;
+	border-radius: 10px;
+	background: var(--choix);
+	font-size: 17px;
+	font-weight: 500;
+	font-variant-numeric: tabular-nums;
+}
+
+.choix[aria-checked="true"] {
+	background: var(--accent);
+	color: var(--sur-accent);
+	font-weight: 600;
+}
+
+.choix-large {
+	grid-column: span 2;
+}
+
+.segmente {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	padding: 2px;
+	gap: 2px;
+	background: var(--choix);
+	border-radius: 10px;
+}
+
+.segmente .choix {
+	background: transparent;
+	font-size: 15px;
+}
+
+.segmente .choix[aria-checked="true"] {
+	background: var(--carte);
+	color: var(--texte);
+	box-shadow: 0 1px 3px rgb(0 0 0 / 0.15);
+}
+
+/* --- Résultat --- */
+
+.recap {
+	text-align: center;
+	font-size: 22px;
+	font-weight: 600;
+}
+
+.recap small {
+	display: block;
+	font-size: 15px;
+	font-weight: 400;
+	color: var(--texte-doux);
+}
+
+/* --- Outils --- */
+
+.outils {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.interrupteur {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: var(--tactile);
+	padding: 0 var(--marge);
+	background: var(--carte);
+	border-radius: var(--rayon);
+}
+
+.interrupteur input {
+	appearance: none;
+	-webkit-appearance: none;
+	position: relative;
+	width: 51px;
+	height: 31px;
+	margin: 0;
+	border-radius: 16px;
+	background: var(--choix);
+	transition: background 0.2s;
+	cursor: pointer;
+}
+
+.interrupteur input::after {
+	content: "";
+	position: absolute;
+	top: 2px;
+	left: 2px;
+	width: 27px;
+	height: 27px;
+	border-radius: 50%;
+	background: #fff;
+	box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
+	transition: transform 0.2s;
+}
+
+.interrupteur input:checked {
+	background: var(--faite);
+}
+
+.interrupteur input:checked::after {
+	transform: translateX(20px);
+}
+
+/* --- Historique --- */
+
+.historique summary {
+	display: flex;
+	align-items: center;
+	min-height: 44px;
+	margin: -8px 0;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.historique ol {
+	margin: 0;
+	padding-left: 2em;
+	font-size: 15px;
+	font-variant-numeric: tabular-nums;
+}
+
+.historique li {
+	padding: 6px 0;
+	border-bottom: 1px solid var(--bordure);
+}
+
+.historique li:last-child {
+	border-bottom: 0;
+}
+
+.historique .points {
+	float: right;
+	font-weight: 600;
+}
+
+.historique .vide {
+	list-style: none;
+	margin-left: -2em;
+	color: var(--texte-doux);
 }
