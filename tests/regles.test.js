@@ -1,8 +1,12 @@
 // Tests des règles de SPEC.md, exécutés dans le navigateur par tests.html.
 
-import { calculerMarque, donneurSuivant, pointsDonne, valeurContrat } from "../js/regles.js";
 import {
-	annulerDerniereDonne, choisirDonneur, modifierAnnonce, nouvellePartie, prendre, terminerDonne,
+	SURNOMS, calculerMarque, couleurAutorisee, donneurSuivant, nomEquipe, nomPlace, normaliserInitiales, pointsDonne,
+	equipeDePlace, surnomsAleatoires, valeurContrat,
+} from "../js/regles.js";
+import {
+	annulerDerniereDonne, choisirDonneur, genererTable, modifierAnnonce, nouvellePartie, prendre,
+	terminerDonne,
 } from "../js/etat.js";
 
 const tests = [];
@@ -141,6 +145,120 @@ test("annuler la donne qui fermait une manche rouvre la manche", () => {
 	egal(calculerMarque(etat.donnes).manches.length, 1);
 	etat = annulerDerniereDonne(etat);
 	egal(calculerMarque(etat.donnes), { manches: [], scores: { nous: 500, eux: 0 }, etoiles: { nous: 0, eux: 0 } });
+});
+
+// --- Couleur d'atout ---
+
+test("SA et TA réservés à Capot et Générale", () => {
+	egal(couleurAutorisee("120", "SA"), false);
+	egal(couleurAutorisee("180", "TA"), false);
+	egal(couleurAutorisee("Capot", "SA"), true);
+	egal(couleurAutorisee("Générale", "TA"), true);
+});
+
+test("les quatre couleurs sont toujours autorisées", () => {
+	for (const c of ["pique", "coeur", "carreau", "trefle"]) egal(couleurAutorisee("80", c), true);
+	egal(couleurAutorisee("80", "violet"), false);
+});
+
+test("la couleur est conservée dans la donne et sans effet sur les points", () => {
+	const etat = jouer(nouvellePartie(), "nous", "100", 1, "faite");
+	egal(pointsDonne(etat.donnes[0]), { equipe: "nous", points: 100 });
+	const avec = terminerDonne(prendre(nouvellePartie(), { preneur: "nous", annonce: "Capot", couleur: "SA", coinche: 1 }), "faite", false);
+	egal(avec.donnes[0].couleur, "SA");
+	egal(pointsDonne(avec.donnes[0]), { equipe: "nous", points: 250 });
+});
+
+// --- Joueurs ---
+
+const joueurs = ["GAU", "HAU", "DRO", "BAS"]; // gauche, haut, droite, bas
+
+test("initiales normalisées : majuscules, sans espaces, 3 lettres", () => {
+	egal(normaliserInitiales(" ab c d"), "ABC");
+	egal(normaliserInitiales("maxime"), "MAX");
+	egal(normaliserInitiales(undefined), "");
+});
+
+test("la place affiche les initiales, sinon la flèche", () => {
+	egal(nomPlace(joueurs, 1), "HAU");
+	egal(nomPlace(["", "", "", ""], 1), "↑");
+	egal(nomPlace(undefined, 3), "↓");
+});
+
+test("Nous = haut + bas, Eux = gauche + droite", () => {
+	egal(nomEquipe(joueurs, "nous"), "HAU / BAS");
+	egal(nomEquipe(joueurs, "eux"), "GAU / DRO");
+});
+
+test("équipe sans initiales ou avec une seule", () => {
+	egal(nomEquipe(["", "", "", ""], "nous"), "Nous");
+	egal(nomEquipe(["", "", "", ""], "eux"), "Eux");
+	egal(nomEquipe(["A", "", "", ""], "eux"), "A");
+});
+
+test("le tour des donneurs suit le sens des aiguilles d'une montre", () => {
+	// gauche (0) -> haut (1) -> droite (2) -> bas (3) -> gauche
+	egal([0, 1, 2, 3].map(donneurSuivant), [1, 2, 3, 0]);
+});
+
+test("quatre surnoms aléatoires distincts de 3 lettres au plus", () => {
+	for (let i = 0; i < 50; i++) {
+		const s = surnomsAleatoires(4);
+		egal(new Set(s).size, 4);
+		for (const nom of s) {
+			if (!SURNOMS.includes(nom) || nom.length > 3) throw new Error(`surnom invalide : ${nom}`);
+		}
+	}
+});
+
+test("les surnoms ne sont pas toujours les mêmes", () => {
+	const tirages = new Set(Array.from({ length: 20 }, () => surnomsAleatoires(4).join()));
+	if (tirages.size < 2) throw new Error("tirage constant");
+});
+
+test("une partie garde les joueurs saisis, normalisés", () => {
+	let etat = nouvellePartie(0, "1234", ["ab", " cd ", "efgh", "ij"]);
+	egal(etat.joueurs, ["AB", "CD", "EFG", "IJ"]);
+	etat = jouer(etat, "nous", "100", 1, "faite");
+	egal(etat.joueurs, ["AB", "CD", "EFG", "IJ"]);
+	egal(annulerDerniereDonne(etat).joueurs, ["AB", "CD", "EFG", "IJ"]);
+});
+
+test("une partie sans joueurs a quatre places vides", () => {
+	egal(nouvellePartie().joueurs, ["", "", "", ""]);
+});
+
+// --- Preneur ---
+
+test("l'équipe d'une place : haut et bas = Nous, gauche et droite = Eux", () => {
+	egal([0, 1, 2, 3].map(equipeDePlace), ["eux", "nous", "eux", "nous"]);
+});
+
+test("le joueur qui prend détermine l'équipe qui marque", () => {
+	let etat = prendre(nouvellePartie(), { joueur: 0, annonce: "100", couleur: "pique", coinche: 1 });
+	egal(etat.enCours.preneur, "eux");
+	egal(etat.enCours.joueur, 0);
+	etat = terminerDonne(etat, "faite", false);
+	egal(pointsDonne(etat.donnes[0]), { equipe: "eux", points: 100 });
+	etat = terminerDonne(prendre(etat, { joueur: 3, annonce: "80", couleur: "coeur", coinche: 1 }), "chutee", false);
+	egal(pointsDonne(etat.donnes[1]), { equipe: "eux", points: 160 });
+});
+
+// --- Numéro de table ---
+
+test("une nouvelle partie reçoit un numéro de table à 4 chiffres", () => {
+	for (let i = 0; i < 50; i++) {
+		if (!/^\d{4}$/.test(genererTable())) throw new Error("format invalide");
+	}
+	if (!/^\d{4}$/.test(nouvellePartie().table)) throw new Error("table absente");
+});
+
+test("le numéro de table est conservé pendant la partie", () => {
+	let etat = nouvellePartie(0, "4242");
+	etat = jouer(etat, "nous", "100", 1, "faite");
+	egal(etat.table, "4242");
+	egal(annulerDerniereDonne(etat).table, "4242");
+	egal(prendre(etat, { preneur: "eux", annonce: "80", coinche: 1 }).table, "4242");
 });
 
 // --- Exécution ---
