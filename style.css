@@ -267,6 +267,8 @@ h3 {
 
 .place {
 	flex: 1;
+	min-width: 0;
+	padding: 0;
 	min-height: var(--haut);
 	border: 0;
 	border-radius: 10px;
@@ -612,6 +614,28 @@ h3 {
 .contrat-en-cours strong {
 	font-size: 22px;
 	font-weight: 700;
+}
+
+/* --- Petits écrans en portrait (iPhone SE…) : blocs plus compacts pour que la marque,
+   les manches terminées et l'historique restent visibles sans défiler --- */
+
+@media (orientation: portrait) and (max-height: 700px) {
+	.marque-equipe {
+		padding: 6px 6px 6px;
+	}
+
+	.score {
+		font-size: 30px;
+	}
+
+	.carte-donneur,
+	.historique:not([open]) {
+		padding-block: 4px;
+	}
+
+	.outils .bouton {
+		min-height: 36px;
+	}
 }
 
 /* --- Paysage sur téléphone : deux colonnes, tout visible sans défiler --- */
