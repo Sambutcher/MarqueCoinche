@@ -70,7 +70,7 @@ body {
 	margin: 0 auto;
 	/* Encoche, Dynamic Island et barre d'accueil */
 	padding:
-		calc(env(safe-area-inset-top) + 8px)
+		calc(env(safe-area-inset-top) + clamp(8px, 2.2dvh, 18px))
 		calc(env(safe-area-inset-right) + var(--marge))
 		calc(env(safe-area-inset-bottom) + var(--marge))
 		calc(env(safe-area-inset-left) + var(--marge));
@@ -407,7 +407,7 @@ h3 {
 	z-index: 10;
 	margin: 0;
 	padding:
-		calc(env(safe-area-inset-top) + 8px)
+		calc(env(safe-area-inset-top) + clamp(8px, 2.2dvh, 18px))
 		calc(env(safe-area-inset-right) + var(--marge))
 		calc(env(safe-area-inset-bottom) + var(--marge))
 		calc(env(safe-area-inset-left) + var(--marge));
