@@ -26,19 +26,30 @@ function garderEcranAllume() {
 	if (!("wakeLock" in navigator)) return;
 
 	let verrou = null;
+	let enCours = false;
 
 	async function verrouiller() {
-		if (verrou || document.visibilityState !== "visible") return;
+		if (verrou || enCours || document.visibilityState !== "visible") return;
+		enCours = true;
 		try {
-			verrou = await navigator.wakeLock.request("screen");
-			verrou.addEventListener("release", () => { verrou = null; });
+			const v = await navigator.wakeLock.request("screen");
+			verrou = v;
+			v.addEventListener("release", () => { if (verrou === v) verrou = null; });
 		} catch {
-			verrou = null;
+			verrou = null; // refusé (ex. pas de geste utilisateur) : on réessaiera
+		} finally {
+			enCours = false;
 		}
 	}
 
 	// Le verrou est relâché quand l'app passe en arrière-plan : on le reprend au retour
 	document.addEventListener("visibilitychange", verrouiller);
+	window.addEventListener("pageshow", verrouiller);
+	window.addEventListener("focus", verrouiller);
+	// iOS exige souvent un geste de l'utilisateur : on réessaie à chaque toucher tant qu'il manque
+	for (const type of ["pointerdown", "touchend", "click"]) {
+		document.addEventListener(type, verrouiller, { passive: true });
+	}
 	verrouiller();
 }
 
