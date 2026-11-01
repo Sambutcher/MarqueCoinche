@@ -20,7 +20,7 @@
 	/* Hauteurs qui suivent la hauteur de l'écran pour que tout tienne sans défiler */
 	--tactile: clamp(38px, 6dvh, 48px);
 	--haut: clamp(32px, 5.4dvh, 46px);
-	--ecart: clamp(6px, 1.3dvh, 12px);
+	--ecart: clamp(5px, 1.1dvh, 12px);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -70,7 +70,7 @@ body {
 	margin: 0 auto;
 	/* Encoche, Dynamic Island et barre d'accueil */
 	padding:
-		calc(env(safe-area-inset-top) + clamp(14px, 3.2dvh, 28px))
+		calc(env(safe-area-inset-top) + clamp(28px, 5.8dvh, 44px))
 		calc(env(safe-area-inset-right) + var(--marge))
 		calc(env(safe-area-inset-bottom) + var(--marge))
 		calc(env(safe-area-inset-left) + var(--marge));
@@ -407,7 +407,7 @@ h3 {
 	z-index: 10;
 	margin: 0;
 	padding:
-		calc(env(safe-area-inset-top) + clamp(14px, 3.2dvh, 28px))
+		calc(env(safe-area-inset-top) + clamp(28px, 5.8dvh, 44px))
 		calc(env(safe-area-inset-right) + var(--marge))
 		calc(env(safe-area-inset-bottom) + var(--marge))
 		calc(env(safe-area-inset-left) + var(--marge));
