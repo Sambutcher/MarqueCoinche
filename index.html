@@ -5,7 +5,7 @@
 	<meta charset="utf-8">
 	<title>Marque de Coinche</title>
 	<link rel="canonical" href="https://sambutcher.github.io/MarqueCoinche/">
-	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 	<meta name="description" content="Marque des points à la coinche, utilisable hors connexion.">
 
 	<!-- Application installée (écran d'accueil) -->
@@ -31,75 +31,150 @@
 <body>
 	<main class="app">
 
-		<!-- Marque -->
-		<section class="marque" aria-label="Score">
-			<div class="marque-equipe">
-				<h2>Nous</h2>
-				<ol class="manches" id="manches-nous"></ol>
-				<p class="score" id="score-nous">0</p>
-				<p class="etoiles" id="etoiles-nous"></p>
-			</div>
-			<div class="marque-equipe">
-				<h2>Eux</h2>
-				<ol class="manches" id="manches-eux"></ol>
-				<p class="score" id="score-eux">0</p>
-				<p class="etoiles" id="etoiles-eux"></p>
-			</div>
-		</section>
-
-		<!-- Phase 1 : annonce -->
-		<div class="phase" id="phase-annonce">
-			<section class="carte carte-donneur donneur" role="radiogroup" aria-labelledby="titre-donneur" id="donneurs">
-				<h3 id="titre-donneur">Donneur</h3>
-				<button type="button" class="place" data-donneur="0" role="radio" aria-label="Donneur à gauche">←</button>
-				<button type="button" class="place" data-donneur="1" role="radio" aria-label="Donneur en face">↑</button>
-				<button type="button" class="place" data-donneur="2" role="radio" aria-label="Donneur à droite">→</button>
-				<button type="button" class="place" data-donneur="3" role="radio" aria-label="Donneur en bas">↓</button>
+		<!-- Accueil -->
+		<div class="ecran" id="ecran-accueil">
+			<h1 class="titre">Marque de Coinche</h1>
+			<section class="carte menu">
+				<button type="button" class="bouton bouton-principal" id="accueil-nouvelle">Nouvelle partie</button>
+				<button type="button" class="bouton bouton-contour" id="accueil-reprendre">Reprendre la partie</button>
 			</section>
-
-			<section class="carte" aria-label="Contrat">
-				<div class="grille-contrats" role="radiogroup" aria-label="Contrat" id="contrats"></div>
-
-				<div class="segmente" role="radiogroup" aria-label="Coinche" id="coinches"></div>
-
-				<div class="paire">
-					<button type="button" class="bouton bouton-principal" data-preneur="nous" disabled>Nous prenons</button>
-					<button type="button" class="bouton bouton-principal" data-preneur="eux" disabled>Eux prennent</button>
+			<form class="carte recherche" id="form-scores">
+				<label for="numero-table">Scores d'une autre table</label>
+				<div class="pile">
+					<input type="text" id="numero-table" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+						autocomplete="off" placeholder="N° de table" required>
+					<button type="submit" class="bouton bouton-contour">Afficher les scores</button>
 				</div>
-			</section>
+				<p class="message" id="message-accueil" role="status"></p>
+			</form>
 		</div>
 
-		<!-- Phase 2 : résultat -->
-		<section class="carte" id="phase-resultat" aria-label="Résultat" hidden>
-			<p class="recap" id="recap"></p>
+		<!-- Joueurs autour de la table -->
+		<div class="ecran" id="ecran-table" hidden>
+			<h1 class="titre" id="titre-table"></h1>
+			<form class="carte" id="form-table">
+				<div class="table-jeu">
+					<input type="text" class="joueur joueur-nous place-haut" data-place="1" maxlength="3"
+						aria-label="Joueur en haut (Nous)" autocomplete="off" autocapitalize="characters" spellcheck="false">
+					<input type="text" class="joueur joueur-eux place-gauche" data-place="0" maxlength="3"
+						aria-label="Joueur à gauche (Eux)" autocomplete="off" autocapitalize="characters" spellcheck="false">
+					<div class="plateau" aria-hidden="true"></div>
+					<input type="text" class="joueur joueur-eux place-droite" data-place="2" maxlength="3"
+						aria-label="Joueur à droite (Eux)" autocomplete="off" autocapitalize="characters" spellcheck="false">
+					<input type="text" class="joueur joueur-nous place-bas" data-place="3" maxlength="3"
+						aria-label="Joueur en bas (Nous)" autocomplete="off" autocapitalize="characters" spellcheck="false">
+				</div>
+				<div class="paire">
+					<button type="button" class="bouton bouton-contour" id="table-retour">Retour</button>
+					<button type="submit" class="bouton bouton-principal">Commencer</button>
+				</div>
+			</form>
+		</div>
 
-			<button type="button" class="bouton bouton-etoile" id="etoile" aria-pressed="false">★ Étoile</button>
+		<!-- Scores d'une autre table -->
+		<div class="ecran" id="ecran-scores" hidden>
+			<h1 class="titre" id="titre-scores"></h1>
+			<p class="message" id="message-scores" role="status"></p>
+			<div id="resultat-scores" hidden>
 
-			<div class="paire">
-				<button type="button" class="bouton bouton-faite" data-resultat="faite">Faite</button>
-				<button type="button" class="bouton bouton-chutee" data-resultat="chutee">Chutée</button>
+				<!-- Marque (lecture seule) -->
+				<section class="marque" aria-label="Score">
+					<div class="marque-equipe">
+						<h2 id="lect-titre-nous">Nous</h2>
+						<ol class="manches" id="lect-manches-nous"></ol>
+						<p class="score" id="lect-score-nous">0</p>
+						<p class="etoiles" id="lect-etoiles-nous"></p>
+					</div>
+					<div class="marque-equipe">
+						<h2 id="lect-titre-eux">Eux</h2>
+						<ol class="manches" id="lect-manches-eux"></ol>
+						<p class="score" id="lect-score-eux">0</p>
+						<p class="etoiles" id="lect-etoiles-eux"></p>
+					</div>
+				</section>
+
+				<p class="carte contrat-en-cours">
+					<small>Contrat en cours</small>
+					<strong id="lect-contrat"></strong>
+				</p>
 			</div>
-			<button type="button" class="bouton bouton-contour" data-resultat="annulee">Annulée</button>
-			<button type="button" class="bouton bouton-lien" id="modifier">Modifier l'annonce</button>
-		</section>
+			<button type="button" class="bouton bouton-contour" id="scores-retour">Retour à l'accueil</button>
+		</div>
 
-		<!-- Outils -->
-		<section class="outils">
-			<div class="paire">
-				<button type="button" class="bouton bouton-contour" id="annuler-donne">↶ Annuler la donne</button>
-				<button type="button" class="bouton bouton-contour bouton-danger" id="nouvelle-partie">Nouvelle partie</button>
+		<!-- Partie -->
+		<div class="ecran" id="ecran-partie" hidden>
+			<p class="table-numero" id="table-numero"></p>
+
+			<!-- Marque -->
+			<section class="marque" aria-label="Score">
+				<div class="marque-equipe">
+					<h2 id="titre-nous">Nous</h2>
+					<ol class="manches" id="manches-nous"></ol>
+					<p class="score" id="score-nous">0</p>
+					<p class="etoiles" id="etoiles-nous"></p>
+				</div>
+				<div class="marque-equipe">
+					<h2 id="titre-eux">Eux</h2>
+					<ol class="manches" id="manches-eux"></ol>
+					<p class="score" id="score-eux">0</p>
+					<p class="etoiles" id="etoiles-eux"></p>
+				</div>
+			</section>
+
+			<!-- Phase 1 : annonce -->
+			<div class="phase" id="phase-annonce">
+				<section class="carte carte-donneur donneur" role="radiogroup" aria-labelledby="titre-donneur" id="donneurs">
+					<h3 id="titre-donneur">Donneur</h3>
+					<button type="button" class="place" data-donneur="0" role="radio" aria-label="Donneur à gauche">←</button>
+					<button type="button" class="place" data-donneur="1" role="radio" aria-label="Donneur en face">↑</button>
+					<button type="button" class="place" data-donneur="2" role="radio" aria-label="Donneur à droite">→</button>
+					<button type="button" class="place" data-donneur="3" role="radio" aria-label="Donneur en bas">↓</button>
+				</section>
+
+				<section class="carte" aria-label="Contrat">
+					<div class="grille-contrats" role="radiogroup" aria-label="Contrat" id="contrats"></div>
+
+					<div class="grille-couleurs" role="radiogroup" aria-label="Couleur d'atout" id="couleurs"></div>
+
+					<div class="segmente" role="radiogroup" aria-label="Coinche" id="coinches"></div>
+				</section>
+
+				<section class="carte carte-donneur donneur" aria-labelledby="titre-preneur" id="preneurs">
+					<h3 id="titre-preneur">Preneur</h3>
+					<button type="button" class="place" data-joueur="0" aria-label="Preneur à gauche" disabled>←</button>
+					<button type="button" class="place" data-joueur="1" aria-label="Preneur en face" disabled>↑</button>
+					<button type="button" class="place" data-joueur="2" aria-label="Preneur à droite" disabled>→</button>
+					<button type="button" class="place" data-joueur="3" aria-label="Preneur en bas" disabled>↓</button>
+				</section>
 			</div>
-			<label class="interrupteur" id="option-ecran" hidden>
-				<span>Garder l'écran allumé</span>
-				<input type="checkbox" id="ecran-allume" role="switch">
-			</label>
-		</section>
 
-		<details class="carte historique" id="historique">
-			<summary>Historique</summary>
-			<ol id="liste-donnes" reversed></ol>
-		</details>
+			<!-- Phase 2 : résultat -->
+			<section class="carte" id="phase-resultat" aria-label="Résultat" hidden>
+				<p class="recap" id="recap"></p>
 
+				<button type="button" class="bouton bouton-etoile" id="etoile" aria-pressed="false">★ Étoile</button>
+
+				<div class="paire">
+					<button type="button" class="bouton bouton-faite" data-resultat="faite">Faite</button>
+					<button type="button" class="bouton bouton-chutee" data-resultat="chutee">Chutée</button>
+				</div>
+				<button type="button" class="bouton bouton-contour" data-resultat="annulee">Annulée</button>
+				<button type="button" class="bouton bouton-lien" id="modifier">Modifier l'annonce</button>
+			</section>
+
+			<!-- Outils -->
+			<section class="outils">
+				<div class="paire">
+					<button type="button" class="bouton bouton-contour" id="annuler-donne">↶ Annuler la donne</button>
+					<button type="button" class="bouton bouton-contour" id="retour-accueil">Accueil</button>
+				</div>
+			</section>
+
+			<details class="carte historique" id="historique">
+				<summary>Historique</summary>
+				<ol id="liste-donnes" reversed></ol>
+			</details>
+		</div>
 	</main>
 </body>
 

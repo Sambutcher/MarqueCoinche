@@ -16,8 +16,11 @@
 	--etoile: #f5a623;
 
 	--rayon: 12px;
-	--marge: 16px;
-	--tactile: 48px;
+	--marge: clamp(10px, 2dvh, 16px);
+	/* Hauteurs qui suivent la hauteur de l'écran pour que tout tienne sans défiler */
+	--tactile: clamp(38px, 6dvh, 48px);
+	--haut: clamp(32px, 5.4dvh, 46px);
+	--ecart: clamp(6px, 1.3dvh, 12px);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -42,11 +45,15 @@
 html {
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
+	height: 100%;
+	overflow: hidden;
+	touch-action: manipulation; /* pas de zoom par double toucher */
 }
 
 body {
 	margin: 0;
-	min-height: 100dvh;
+	height: 100dvh;
+	overflow: hidden;
 	background: var(--fond);
 	color: var(--texte);
 	font: 17px/1.35 -apple-system, BlinkMacSystemFont, system-ui, "Segoe UI", Roboto, sans-serif;
@@ -57,12 +64,13 @@ body {
 .app {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: var(--ecart);
+	height: 100dvh;
 	max-width: 480px;
 	margin: 0 auto;
 	/* Encoche, Dynamic Island et barre d'accueil */
 	padding:
-		calc(env(safe-area-inset-top) + 12px)
+		calc(env(safe-area-inset-top) + 8px)
 		calc(env(safe-area-inset-right) + var(--marge))
 		calc(env(safe-area-inset-bottom) + var(--marge))
 		calc(env(safe-area-inset-left) + var(--marge));
@@ -103,13 +111,13 @@ h3 {
 .phase {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: var(--ecart);
 }
 
 .carte {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: var(--ecart);
 	padding: var(--marge);
 	background: var(--carte);
 	border-radius: var(--rayon);
@@ -140,7 +148,11 @@ h3 {
 }
 
 .manches {
-	margin: 4px 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 0 10px;
+	margin: 2px 0 0;
 	padding: 0;
 	list-style: none;
 	font-size: 15px;
@@ -154,7 +166,7 @@ h3 {
 }
 
 .score {
-	font-size: 40px;
+	font-size: clamp(32px, 5.6dvh, 40px);
 	font-weight: 700;
 	line-height: 1.1;
 	font-variant-numeric: tabular-nums;
@@ -196,14 +208,14 @@ h3 {
 .bouton-faite {
 	background: var(--faite);
 	color: #fff;
-	min-height: 64px;
+	min-height: clamp(48px, 8dvh, 64px);
 	font-size: 20px;
 }
 
 .bouton-chutee {
 	background: var(--chutee);
 	color: #fff;
-	min-height: 64px;
+	min-height: clamp(48px, 8dvh, 64px);
 	font-size: 20px;
 }
 
@@ -237,7 +249,7 @@ h3 {
 .paire {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 10px;
+	gap: var(--ecart);
 }
 
 /* --- Donneur : une ligne, les quatre places côte à côte --- */
@@ -246,7 +258,7 @@ h3 {
 	flex-direction: row;
 	align-items: center;
 	gap: 6px;
-	padding-block: 10px;
+	padding-block: clamp(6px, 1.2dvh, 10px);
 }
 
 .donneur h3 {
@@ -255,11 +267,15 @@ h3 {
 
 .place {
 	flex: 1;
-	min-height: 44px;
+	min-height: var(--haut);
 	border: 0;
 	border-radius: 10px;
 	background: var(--choix);
 	font-size: 20px;
+}
+
+.place:disabled {
+	opacity: 0.35;
 }
 
 .place[aria-checked="true"] {
@@ -276,7 +292,7 @@ h3 {
 }
 
 .choix {
-	min-height: 44px;
+	min-height: var(--haut);
 	padding: 0 2px;
 	border: 0;
 	border-radius: 10px;
@@ -290,6 +306,40 @@ h3 {
 	background: var(--accent);
 	color: var(--sur-accent);
 	font-weight: 600;
+}
+
+.grille-couleurs {
+	display: grid;
+	grid-template-columns: repeat(6, 1fr);
+	gap: 6px;
+}
+
+.grille-couleurs .choix {
+	font-size: 22px;
+}
+
+.grille-couleurs .choix-special {
+	font-size: 17px;
+}
+
+/* Façon carte à jouer : fond blanc dans les deux thèmes, ♥ ♦ en rouge, ♠ ♣ SA TA en noir.
+   La couleur choisie est entourée plutôt que remplie, pour garder sa couleur lisible. */
+.grille-couleurs .choix {
+	background: #fff;
+	color: #111;
+}
+
+.grille-couleurs .choix-rouge {
+	color: #d32f2f;
+}
+
+.grille-couleurs .choix[aria-checked="true"] {
+	background: #fff;
+	box-shadow: inset 0 0 0 3px var(--accent);
+}
+
+.choix:disabled {
+	opacity: 0.35;
 }
 
 .choix-large {
@@ -336,51 +386,7 @@ h3 {
 .outils {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
-}
-
-.interrupteur {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	min-height: var(--tactile);
-	padding: 0 var(--marge);
-	background: var(--carte);
-	border-radius: var(--rayon);
-}
-
-.interrupteur input {
-	appearance: none;
-	-webkit-appearance: none;
-	position: relative;
-	width: 51px;
-	height: 31px;
-	margin: 0;
-	border-radius: 16px;
-	background: var(--choix);
-	transition: background 0.2s;
-	cursor: pointer;
-}
-
-.interrupteur input::after {
-	content: "";
-	position: absolute;
-	top: 2px;
-	left: 2px;
-	width: 27px;
-	height: 27px;
-	border-radius: 50%;
-	background: #fff;
-	box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
-	transition: transform 0.2s;
-}
-
-.interrupteur input:checked {
-	background: var(--faite);
-}
-
-.interrupteur input:checked::after {
-	transform: translateX(20px);
+	gap: var(--ecart);
 }
 
 /* --- Historique --- */
@@ -388,10 +394,43 @@ h3 {
 .historique summary {
 	display: flex;
 	align-items: center;
-	min-height: 44px;
+	min-height: var(--haut);
 	margin: -8px 0;
 	font-weight: 600;
 	cursor: pointer;
+}
+
+/* Ouvert : l'historique recouvre l'écran et défile à l'intérieur, la page ne bouge pas */
+.historique[open] {
+	position: fixed;
+	inset: 0;
+	z-index: 10;
+	margin: 0;
+	padding:
+		calc(env(safe-area-inset-top) + 8px)
+		calc(env(safe-area-inset-right) + var(--marge))
+		calc(env(safe-area-inset-bottom) + var(--marge))
+		calc(env(safe-area-inset-left) + var(--marge));
+	border-radius: 0;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	touch-action: pan-y;
+	background: var(--fond);
+}
+
+.historique[open] summary {
+	position: sticky;
+	top: 0;
+	margin: 0 0 4px;
+	padding: 0 0 0 4px;
+	background: var(--fond);
+}
+
+.historique[open] summary::after {
+	content: "Fermer ✕";
+	margin-left: auto;
+	color: var(--accent);
+	font-weight: 500;
 }
 
 .historique ol {
@@ -419,4 +458,227 @@ h3 {
 	list-style: none;
 	margin-left: -2em;
 	color: var(--texte-doux);
+}
+
+/* --- Écrans : accueil, partie, scores d'une autre table --- */
+
+.ecran {
+	display: flex;
+	flex-direction: column;
+	gap: var(--ecart);
+	flex: 1;
+	min-height: 0;
+}
+
+.ecran[hidden],
+#resultat-scores[hidden] {
+	display: none;
+}
+
+#resultat-scores {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.titre {
+	margin: clamp(4px, 2.5dvh, 24px) 0 4px;
+	font-size: clamp(22px, 3.6dvh, 28px);
+	text-align: center;
+}
+
+.menu {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.table-numero {
+	margin: 0;
+	text-align: center;
+	font-size: 15px;
+	color: var(--texte-doux);
+}
+
+.recherche label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 600;
+}
+
+.recherche input {
+	min-height: var(--tactile);
+	padding: 0 var(--marge);
+	font: inherit;
+	font-size: 22px;
+	letter-spacing: 0.2em;
+	text-align: center;
+	color: var(--texte);
+	background: var(--choix);
+	border: 0;
+	border-radius: var(--rayon);
+}
+
+.message {
+	margin: 0;
+	text-align: center;
+	color: var(--texte-doux);
+}
+
+.message:empty {
+	display: none;
+}
+
+
+/* --- Joueurs autour de la table --- */
+
+.table-jeu {
+	width: 100%;
+	max-width: 340px;
+	margin-inline: auto;
+	display: grid;
+	grid-template-columns: 1fr 1.4fr 1fr;
+	grid-template-areas:
+		". haut ."
+		"gauche plateau droite"
+		". bas .";
+	align-items: center;
+	justify-items: center;
+	gap: 10px;
+}
+
+.place-haut { grid-area: haut; }
+.place-gauche { grid-area: gauche; }
+.place-droite { grid-area: droite; }
+.place-bas { grid-area: bas; }
+
+.plateau {
+	grid-area: plateau;
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: clamp(52px, 12dvh, 100px);
+	border-radius: 50%;
+	background: var(--faite);
+	color: var(--sur-accent);
+	font-weight: 600;
+	opacity: 0.85;
+}
+
+.joueur {
+	width: 100%;
+	max-width: 5.5em;
+	min-width: 0;
+	min-height: var(--tactile);
+	padding: 0;
+	font: inherit;
+	font-size: 22px;
+	font-weight: 600;
+	text-align: center;
+	text-transform: uppercase;
+	color: var(--texte);
+	background: var(--choix);
+	border: 0;
+	border-bottom: 4px solid transparent;
+	border-radius: var(--rayon);
+}
+
+.joueur-nous { border-bottom-color: var(--accent); }
+.joueur-eux { border-bottom-color: var(--etoile); }
+
+/* --- Champ et bouton empilés, pleine largeur --- */
+
+.pile {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.pile input {
+	width: 100%;
+}
+
+.contrat-en-cours {
+	margin: 0;
+	gap: 2px;
+	text-align: center;
+}
+
+.contrat-en-cours small {
+	font-size: 13px;
+	color: var(--texte-doux);
+}
+
+.contrat-en-cours strong {
+	font-size: 22px;
+	font-weight: 700;
+}
+
+/* --- Paysage sur téléphone : deux colonnes, tout visible sans défiler --- */
+
+@media (orientation: landscape) and (max-height: 560px) {
+	:root {
+		--marge: 10px;
+		--ecart: 6px;
+		--tactile: clamp(34px, 11dvh, 44px);
+		--haut: clamp(28px, 9.5dvh, 40px);
+	}
+
+	.app {
+		max-width: none;
+		padding-top: calc(env(safe-area-inset-top) + 4px);
+		padding-bottom: calc(env(safe-area-inset-bottom) + 4px);
+	}
+
+	.grille-contrats {
+		grid-template-columns: repeat(8, 1fr);
+	}
+
+	.score {
+		font-size: clamp(26px, 9dvh, 36px);
+	}
+
+	/* Accueil : titre en haut, menu et recherche côte à côte */
+	#ecran-accueil {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto 1fr;
+		align-items: start;
+		gap: var(--ecart);
+	}
+
+	#ecran-accueil .titre {
+		grid-column: 1 / -1;
+	}
+
+	/* Partie : marque et outils à gauche, saisie ou résultat à droite */
+	#ecran-partie {
+		display: grid;
+		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+		grid-template-rows: auto auto 1fr auto;
+		gap: var(--ecart);
+	}
+
+	#ecran-partie > .table-numero,
+	#ecran-partie > .marque,
+	#ecran-partie > .outils,
+	#ecran-partie > .historique {
+		grid-column: 1;
+	}
+
+	#ecran-partie > .table-numero { grid-row: 1; }
+	#ecran-partie > .marque { grid-row: 2; }
+	#ecran-partie > .outils { grid-row: 3; align-self: end; }
+	#ecran-partie > .historique { grid-row: 4; }
+
+	#phase-annonce,
+	#phase-resultat {
+		grid-column: 2;
+		grid-row: 1 / -1;
+		align-self: start;
+	}
+
+	.outils .paire {
+		grid-template-columns: 1fr;
+	}
 }
