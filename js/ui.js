@@ -303,7 +303,7 @@ function brancherAccueil() {
 		for (const champ of document.querySelectorAll("[data-place]")) joueurs[Number(champ.dataset.place)] = champ.value;
 		brouillon = brouillonVide();
 		etoile = false;
-		const bouton = e.submitter;
+		const bouton = $("form-table").querySelector("[type=submit]"); // e.submitter est null si le formulaire est soumis sans bouton
 		bouton.disabled = true;
 		const prepa = nouvelleTable;
 		await prepa.verification;
