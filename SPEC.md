@@ -61,7 +61,7 @@ et servent de référence aux tests (`tests.html`).
 - Les initiales remplacent les flèches du donneur et les mots « Nous » / « Eux »
   (équipe affichée « AB / CD »). Une place laissée vide garde la flèche ; une équipe sans
   initiales garde « Nous » / « Eux ».
-- Les noms sont sauvegardés avec la partie et publiés avec elle (colonne `joueurs`).
+- Les noms sont sauvegardés avec la partie et publiés avec elle (champ `joueurs`).
 
 ## Accueil et tables partagées
 
@@ -73,9 +73,13 @@ et servent de référence aux tests (`tests.html`).
 - **Reprendre la partie** revient sur la dernière partie sauvegardée (désactivé sans sauvegarde).
 - **Afficher les scores** : le numéro d'une autre table se saisit sur l'accueil ; l'écran des
   scores l'affiche en lecture seule (pour en changer, retour à l'accueil) avec sa marque et le
-  contrat en cours (ou « Aucun »), rafraîchis toutes les 5 s. Lecture seule.
-- Le partage passe par Firebase Realtime Database (`js/partage.js`, API REST ; règles dans `database.rules.json`) : chaque
-  modification de la partie publie `{ code, donnes, donneur, en_cours }`. Hors connexion, la partie
+  contrat en cours (ou « Aucun »), **en temps réel** : le navigateur reçoit chaque modification par le
+  flux Server-Sent Events de Firebase (`EventSource`). Le flux est coupé quand l'app passe en arrière-plan
+  et rouvert au retour ; sans `EventSource`, ou si le flux est abandonné, l'écran relit la table toutes
+  les 5 s. Lecture seule.
+- Le partage passe par Firebase Realtime Database (`js/partage.js`, API REST ; règles dans `database.rules.json`, à publier dans la console Firebase) : chaque
+  modification de la partie publie le document `tables/<code>` : `donnes`, `donneur`, `joueurs`,
+  `en_cours` et `maj` (date de dernière mise à jour). Hors connexion, la partie
   continue en local et la table se resynchronise à la modification suivante.
 - Tout le monde connaissant le numéro peut lire la table : ne sont publiées que des données de jeu.
 
@@ -87,3 +91,10 @@ et servent de référence aux tests (`tests.html`).
   l'accueil, menu et recherche côte à côte). Vérifié de 375×560 (portrait) à 780×360 (paysage).
 - L'**historique** s'ouvre en plein écran et défile à l'intérieur ; « Fermer » le referme.
 - Les manches terminées s'alignent en ligne et passent à la ligne au lieu d'allonger la page.
+
+## Tests
+
+- `node tests/lancer.mjs` (Node 18 ou plus) ou `tests.html` servi en local : règles de marque, états de
+  partie, normalisation des données Firebase et sauvegarde locale. Les mêmes suites tournent à chaque
+  poussée sur GitHub (`.github/workflows/tests.yml`).
+- Les icônes se régénèrent avec `python3 outils/icones.py` (Pillow requis).

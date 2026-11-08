@@ -2,7 +2,7 @@
 // Stratégie « réseau d'abord » : la dernière version publiée est servie dès qu'il y a du réseau,
 // le cache ne sert qu'en secours. Changer VERSION n'est utile que si la liste FICHIERS change.
 
-const VERSION = "v3";
+const VERSION = "v4";
 const CACHE = `marque-coinche-${VERSION}`;
 const DELAI_RESEAU = 3000; // au-delà, on sert le cache pour ne pas bloquer l'ouverture
 
@@ -19,6 +19,7 @@ const FICHIERS = [
 	"apple-touch-icon.png",
 	"icon-192.png",
 	"icon-512.png",
+	"icon-maskable-512.png",
 	"favicon.ico",
 	"favicon-16x16.png",
 	"favicon-32x32.png",

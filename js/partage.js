@@ -32,7 +32,7 @@ export async function publier(etat) {
 	}
 }
 
-function normaliser(ligne) {
+export function normaliser(ligne) {
 	return ligne
 		? {
 			donnes: Array.isArray(ligne.donnes) ? ligne.donnes : [],
