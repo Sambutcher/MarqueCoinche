@@ -74,7 +74,7 @@ et servent de référence aux tests (`tests.html`).
 - **Afficher les scores** : le numéro d'une autre table se saisit sur l'accueil ; l'écran des
   scores l'affiche en lecture seule (pour en changer, retour à l'accueil) avec sa marque et le
   contrat en cours (ou « Aucun »), rafraîchis toutes les 5 s. Lecture seule.
-- Le partage passe par Supabase (`js/partage.js`, schéma dans `supabase.sql`) : chaque
+- Le partage passe par Firebase Realtime Database (`js/partage.js`, API REST ; règles dans `database.rules.json`) : chaque
   modification de la partie publie `{ code, donnes, donneur, en_cours }`. Hors connexion, la partie
   continue en local et la table se resynchronise à la modification suivante.
 - Tout le monde connaissant le numéro peut lire la table : ne sont publiées que des données de jeu.

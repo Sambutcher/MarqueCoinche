@@ -1,0 +1,19 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "tables": {
+      "$code": {
+        ".read": true,
+        ".write": "$code.matches(/^[0-9]{4}$/)",
+        ".validate": "newData.hasChildren(['donneur', 'joueurs']) && newData.child('donneur').isNumber()",
+        "donnes": { ".validate": true },
+        "donneur": { ".validate": true },
+        "joueurs": { ".validate": true },
+        "en_cours": { ".validate": true },
+        "maj": { ".validate": "newData.isString()" },
+        "$autre": { ".validate": false }
+      }
+    }
+  }
+}
