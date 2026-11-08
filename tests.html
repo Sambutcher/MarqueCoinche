@@ -16,7 +16,7 @@
 	<p id="bilan">Exécution…</p>
 	<ul id="liste"></ul>
 	<script type="module">
-		import { lancerTests } from "./tests/regles.test.js";
+		import { lancerTests } from "./tests/tous.js";
 
 		const resultats = lancerTests();
 		const echecs = resultats.filter(r => !r.ok);
