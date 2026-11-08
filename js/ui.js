@@ -9,6 +9,7 @@ import {
 	annulerDerniereDonne, charger, choisirDonneur, genererTable, modifierAnnonce, nouvellePartie, prendre,
 	sauver, terminerDonne,
 } from "./etat.js";
+import { qrcodeSvg } from "./qrcode.js";
 import { lire, partageDisponible, publier, suivre, suiviTempsReelDisponible, tableLibre } from "./partage.js";
 
 const $ = (id) => document.getElementById(id);
@@ -388,7 +389,37 @@ function demarrerSuiviScores() {
 }
 
 // Le numéro de table est saisi sur l'accueil ; l'écran des scores l'affiche en lecture seule.
+function ouvrirScores(code) {
+	tableSuivie = code;
+	montrer("scores");
+	$("titre-scores").textContent = `Table n° ${code}`;
+	$("message-scores").textContent = "";
+	$("resultat-scores").hidden = true;
+	demarrerSuiviScores();
+}
+
+// Adresse que le QR Code ouvre sur un autre téléphone : l'app, directement sur les scores de la table.
+function adresseTable(code) {
+	const adresse = new URL(location.href);
+	adresse.search = `?table=${code}`;
+	adresse.hash = "";
+	return adresse.href;
+}
+
+function brancherQr() {
+	$("table-numero").addEventListener("click", () => {
+		if (!etat?.table) return;
+		$("qr-image").innerHTML = qrcodeSvg(adresseTable(etat.table));
+		$("dialogue-qr").showModal();
+	});
+	$("qr-fermer").addEventListener("click", () => $("dialogue-qr").close());
+	$("dialogue-qr").addEventListener("click", (e) => {
+		if (e.target === e.currentTarget) e.currentTarget.close(); // clic sur le fond
+	});
+}
+
 function brancherScores() {
+	brancherQr();
 	$("form-scores").addEventListener("submit", (e) => {
 		e.preventDefault();
 		const code = $("numero-table").value.trim();
@@ -397,12 +428,7 @@ function brancherScores() {
 			return;
 		}
 		$("message-accueil").textContent = "";
-		tableSuivie = code;
-		montrer("scores");
-		$("titre-scores").textContent = `Table n° ${code}`;
-		$("message-scores").textContent = "";
-		$("resultat-scores").hidden = true;
-		demarrerSuiviScores();
+		ouvrirScores(code);
 	});
 
 	// En arrière-plan, on coupe le flux (batterie, quota) ; au retour, on le rouvre.
@@ -422,4 +448,7 @@ export function demarrer() {
 	brancherAccueil();
 	brancherScores();
 	montrer("accueil");
+	// Lien du QR Code : ?table=1234 ouvre directement les scores de cette table
+	const code = new URLSearchParams(location.search).get("table");
+	if (code && /^\d{4}$/.test(code)) ouvrirScores(code);
 }

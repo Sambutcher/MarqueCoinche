@@ -101,9 +101,17 @@
 			<button type="button" class="bouton bouton-contour" id="scores-retour">Retour à l'accueil</button>
 		</div>
 
+		<!-- QR Code de la table -->
+		<dialog class="dialogue-qr" id="dialogue-qr" aria-labelledby="qr-titre">
+			<h2 id="qr-titre">Suivre les scores</h2>
+			<div class="qr" id="qr-image" role="img" aria-label="QR Code de la table"></div>
+			<p class="message" id="qr-texte">Scannez ce code avec un autre téléphone pour afficher les scores en direct.</p>
+			<button type="button" class="bouton bouton-contour" id="qr-fermer">Fermer</button>
+		</dialog>
+
 		<!-- Partie -->
 		<div class="ecran" id="ecran-partie" hidden>
-			<p class="table-numero" id="table-numero"></p>
+			<button type="button" class="table-numero" id="table-numero" aria-haspopup="dialog"></button>
 
 			<!-- Marque -->
 			<section class="marque" aria-label="Score">

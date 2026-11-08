@@ -2,7 +2,7 @@
 // Stratégie « réseau d'abord » : la dernière version publiée est servie dès qu'il y a du réseau,
 // le cache ne sert qu'en secours. Changer VERSION n'est utile que si la liste FICHIERS change.
 
-const VERSION = "v4";
+const VERSION = "v5";
 const CACHE = `marque-coinche-${VERSION}`;
 const DELAI_RESEAU = 3000; // au-delà, on sert le cache pour ne pas bloquer l'ouverture
 
@@ -15,6 +15,7 @@ const FICHIERS = [
 	"js/etat.js",
 	"js/regles.js",
 	"js/partage.js",
+	"js/qrcode.js",
 	"manifest.json",
 	"apple-touch-icon.png",
 	"icon-192.png",

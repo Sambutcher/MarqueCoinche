@@ -497,10 +497,31 @@ h3 {
 
 .table-numero {
 	margin: 0;
+	padding: 6px 12px;
+	border: 0;
+	background: none;
+	font: inherit;
 	text-align: center;
 	font-size: 15px;
 	color: var(--texte-doux);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	cursor: pointer;
 }
+
+.dialogue-qr {
+	width: min(86vw, 340px);
+	padding: 20px;
+	border: 0;
+	border-radius: 16px;
+	background: var(--carte, #fff);
+	color: inherit;
+	text-align: center;
+}
+
+.dialogue-qr::backdrop { background: rgba(0, 0, 0, .55); }
+.dialogue-qr h2 { margin: 0 0 12px; font-size: 18px; }
+.dialogue-qr .qr svg { display: block; width: 100%; height: auto; border-radius: 8px; }
 
 .recherche label {
 	display: block;
