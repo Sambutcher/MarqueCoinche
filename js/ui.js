@@ -9,7 +9,7 @@ import {
 	annulerDerniereDonne, charger, choisirDonneur, genererTable, modifierAnnonce, nouvellePartie, prendre,
 	sauver, terminerDonne,
 } from "./etat.js";
-import { lire, partageDisponible, publier, tableLibre } from "./partage.js";
+import { lire, partageDisponible, publier, suivre, suiviTempsReelDisponible, tableLibre } from "./partage.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -21,7 +21,8 @@ const DELAI_RAFRAICHISSEMENT = 5000;
 let etat = null;
 let ecran = "accueil";
 let minuteurPublication = null;
-let minuteurScores = null;
+let minuteurScores = null; // repli : relecture périodique si le flux temps réel est indisponible
+let arreterSuivi = null; // ferme le flux temps réel de la table suivie
 let nouvelleTable = null; // { code, verification } pour la partie en préparation
 let tableSuivie = null; // numéro de la table affichée dans l'écran des scores
 // Choix en cours dans la phase d'annonce, pas encore validés
@@ -48,8 +49,7 @@ function programmerPublication() {
 
 function montrer(nom) {
 	ecran = nom;
-	clearInterval(minuteurScores);
-	minuteurScores = null;
+	arreterSuiviScores();
 	for (const id of ["accueil", "table", "partie", "scores"]) $(`ecran-${id}`).hidden = id !== nom;
 	if (nom === "accueil") $("accueil-reprendre").disabled = etat === null;
 	if (nom === "table") {
@@ -325,28 +325,66 @@ function libelleContrat(enCours, joueurs) {
 	return enCours ? libelleAnnonce(enCours, joueurs) : "Aucun";
 }
 
+function arreterSuiviScores() {
+	clearInterval(minuteurScores);
+	minuteurScores = null;
+	arreterSuivi?.();
+	arreterSuivi = null;
+}
+
+function afficherTable(code, table) {
+	if (code !== tableSuivie || ecran !== "scores") return; // l'utilisateur a changé entre-temps
+	const message = $("message-scores");
+	if (!table) {
+		message.textContent = "Table introuvable.";
+		$("resultat-scores").hidden = true;
+		return;
+	}
+	message.textContent = "";
+	afficherNoms(table.joueurs, "lect-");
+	afficherMarque(table.donnes, "lect-");
+	$("lect-contrat").textContent = libelleContrat(table.enCours, table.joueurs);
+	$("resultat-scores").hidden = false;
+}
+
+function signalerHorsConnexion(code) {
+	if (code !== tableSuivie || ecran !== "scores") return;
+	$("message-scores").textContent = partageDisponible()
+		? "Pas de connexion : dernières valeurs affichées."
+		: "Le partage des scores n'est pas configuré.";
+}
+
 async function actualiserScores() {
 	const code = tableSuivie;
-	const message = $("message-scores");
 	try {
-		const table = await lire(code);
-		if (code !== tableSuivie || ecran !== "scores") return; // l'utilisateur a changé entre-temps
-		if (!table) {
-			message.textContent = "Table introuvable.";
-			$("resultat-scores").hidden = true;
-			return;
-		}
-		message.textContent = "";
-		afficherNoms(table.joueurs, "lect-");
-		afficherMarque(table.donnes, "lect-");
-		$("lect-contrat").textContent = libelleContrat(table.enCours, table.joueurs);
-		$("resultat-scores").hidden = false;
+		afficherTable(code, await lire(code));
 	} catch {
-		if (code !== tableSuivie || ecran !== "scores") return;
-		message.textContent = partageDisponible()
-			? "Pas de connexion : dernières valeurs affichées."
-			: "Le partage des scores n'est pas configuré.";
+		signalerHorsConnexion(code);
 	}
+}
+
+function demarrerPolling() {
+	if (minuteurScores) return;
+	actualiserScores();
+	minuteurScores = setInterval(actualiserScores, DELAI_RAFRAICHISSEMENT);
+}
+
+// Temps réel quand le navigateur le permet, sinon relecture toutes les 5 s.
+function demarrerSuiviScores() {
+	arreterSuiviScores();
+	const code = tableSuivie;
+	if (!suiviTempsReelDisponible()) return demarrerPolling();
+	arreterSuivi = suivre(
+		code,
+		(table) => afficherTable(code, table),
+		(definitive) => {
+			signalerHorsConnexion(code);
+			if (definitive) {
+				arreterSuivi = null;
+				demarrerPolling();
+			}
+		},
+	);
 }
 
 // Le numéro de table est saisi sur l'accueil ; l'écran des scores l'affiche en lecture seule.
@@ -364,8 +402,14 @@ function brancherScores() {
 		$("titre-scores").textContent = `Table n° ${code}`;
 		$("message-scores").textContent = "";
 		$("resultat-scores").hidden = true;
-		actualiserScores();
-		minuteurScores = setInterval(actualiserScores, DELAI_RAFRAICHISSEMENT);
+		demarrerSuiviScores();
+	});
+
+	// En arrière-plan, on coupe le flux (batterie, quota) ; au retour, on le rouvre.
+	document.addEventListener("visibilitychange", () => {
+		if (ecran !== "scores") return;
+		if (document.hidden) arreterSuiviScores();
+		else demarrerSuiviScores();
 	});
 
 	$("scores-retour").addEventListener("click", () => montrer("accueil"));
